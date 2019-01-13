@@ -1,0 +1,7 @@
+require:
+python 2.7.10
+USAGE:
+python FtpClient.py
+>ftp example.com
+
+
