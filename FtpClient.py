@@ -1,6 +1,7 @@
 import sys
 import ftplib
 import getpass
+import os
 def LoginRequire():
     print "example: 'ftp example.com' to connect to server"
     cmd = raw_input(">")
@@ -32,6 +33,8 @@ def Menu(ftp):
         print "--------------------------"
         print "'ls' to list files on current folder"
         print "'get filename' to download file on current path"
+        print "'upload local-filename' to upload file to server"
+        print "'delete filename' to delete server file "
         print "'exit' to quit ftp connection" 
         print "--------------------------"
         cmd = raw_input(">")
@@ -54,6 +57,12 @@ def HandleUserCommand(ftp,cmd):
         else:
             GetFile(ftp,filename)
             print "file downloaded."
+    elif "upload" in cmd:
+        file = cmd.split(" ")[1]
+        Upload(ftp, file)
+    elif "delete" in cmd:
+        filename = cmd.split(" ")[1]
+        ftp.delete(filename)
     else:
         print "command not found"
 
@@ -71,7 +80,14 @@ def GetFile(ftp, filename):
     except:
         print "Error: download file failed"
 
-
+def Upload(ftp, file):
+    ext = os.path.splitext(file)[1]
+    if ext in (".txt", ".htm", ".html"):
+        ftp.storlines("STOR " + file, open(file))
+    else:
+        ftp.storbinary("STOR " + file, open(file, "rb"), 1024)
+def Delete(ftp, filename):
+    pass
 if __name__=="__main__":
     ftp = LoginRequire()
     Menu(ftp)
